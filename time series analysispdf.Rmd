@@ -1,0 +1,287 @@
+---
+output:
+  html_document: default
+  word_document: default
+  pdf_document: default
+---
+
+<div>
+
+::: {style="margin-left:125px"}
+### TIME SERIES ANALYSIS FOR ENERGY CONSUMPTION(GERMANY)
+:::
+
+</div>
+
+#### Import Libraries
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+```
+
+#### Load dataset
+
+```{r}
+df<- read.csv("D:/opsd_germany_daily.txt", header= TRUE)
+```
+
+```{r}
+
+head(df)
+```
+
+```{r}
+tail(df)
+```
+
+```{r}
+summary(df)   
+```
+
+```{r}
+dim(df)
+```
+
+```{r}
+str(df)
+```
+
+```{r}
+head(df$Date)
+```
+
+```{r}
+df2<- read.csv("D:/opsd_germany_daily.txt",header = TRUE)
+```
+
+```{r}
+head(df2)
+
+```
+
+```{r}
+str(df2$Date)
+```
+
+```{r}
+summary(df2)
+```
+
+```{r}
+x <- as.Date(df2$Date)
+head(x)
+class(x)
+str(x)
+```
+
+```{r}
+year <- as.numeric(format(x,'%Y'))
+head(year)
+length(year)
+```
+
+```{r}
+month <-as.numeric(format(x,'%m'))
+head(month)
+```
+
+```{r}
+day <- as.numeric(format(x,'%d'))
+head(day)
+```
+
+```{r}
+length(year)
+length(df2$Consumption)
+```
+
+```{r}
+df2 <- cbind(df2,year,month,day)
+```
+
+```{r}
+df2[1:3,]
+```
+
+```{r}
+plot(df2$year ,df2$Consumption,type='l', xlab="year", ylab="consumption")
+```
+
+```{r}
+plot(df2$year ,df2$Consumption,type='l', xlab="year", ylab="consumption",
+     lty=1 ,ylim = c(800, 1500) , xlim=c(2006,2018))
+```
+
+```{r}
+par(mfrow=c(1,1))
+```
+
+```{r}
+plot(df2[,2])
+```
+
+```{r}
+plot(df2[,2], xlab ="year",ylab="consumption",type='l',lwd=2,col='blue')
+```
+
+```{r}
+plot(df2[,2], xlab ="year",ylab="consumption",type='l',lwd=2,
+     xlim=c(2006,2018),ylim=c(900,2000),main="Consumption Graph")
+```
+
+```{r}
+plot(10*diff(log(df2[,2])),xlab="year",ylab="Consumption",type='l',lwd=2,
+     ylim=c(-5,5),main="Consumption",col="orange")
+```
+
+```{r}
+ggplot(df2,type="o")+geom_line(aes(x=year,y=Consumption))
+```
+
+```{r}
+ggplot(data= df2, aes(x=year , y= Consumption, group= 1))+ geom_line(linetype="dashed")+ geom_point()
+```
+
+```{r}
+min(df2[,3],na.rm=T)
+max(df[,3],na.rm=T)
+```
+
+```{r}
+min(df2[,2],na.rm=T)
+max(df2[,2],na.rm=T)
+```
+
+```{r}
+min(df2[,4],na.rm=T)
+max(df2[,4],na.rm=T)
+```
+
+```{r}
+min(df2[,5],na.rm=T)
+max(df2[,5],na.rm=T)
+```
+
+```{r}
+par(mfrow=c(3,1))
+```
+
+```{r}
+plot1 <- plot(df2[,2],xlab="year",ylab="Daily Totals(GWh)",type="l",
+              lwd=2, main="Consumption",col ="orange", ylim=c(840,1750)) 
+```
+
+```{r}
+plot2 <- plot(df2[,4],xlab="year",ylab="Daily Totals(GWh)",type="l",
+               main="Solar",col ="blue", ylim=c(0,500))
+```
+
+```{r}
+plot3 <- plot(df2[,3],xlab="year",ylab="Daily Totals(GWh)",type="l",
+              lwd=2, main="Wind",col ="red", ylim=c(0,900))
+```
+
+```{r}
+par(mfrow=c(1,1))
+```
+
+```{r}
+x <- as.Date(df2$Date)
+head(x)
+class(x)
+str(x)
+```
+
+```{r}
+moddate <- as.Date(x,format="%m/%d/%Y")
+str(moddate)
+```
+
+```{r}
+df3 <- cbind(moddate,df2) 
+head(df3)
+str(df3)
+```
+
+```{r}
+df4 <- subset(df3,subset=df3$moddate >= '2017-01-01' & df3$moddate <= '2017-12-31')
+head(df4)
+```
+
+```{r}
+plot4 <- plot(df4[,1], df4[,3],xlab= "year",ylab="Daily Totals (GWH)", type='l',
+              lwd=2,main="Consumption",col='orange')
+```
+
+```{r}
+df4=subset(df3,subset=df3$moddate >= '2017-01-01' & df3$moddate <= '2017-02-28')
+head(df4)
+```
+
+```{r}
+xmin <- min(df4[,1],na.rm=T)
+xmax <- max(df4[,1],na.rm=T)
+xmin
+xmax
+```
+
+```{r}
+ymin <-min(df4[,3],na.rm=T)
+ymax <-max(df4[,3],na.rm=T)
+ymin
+ymax
+```
+
+```{r}
+plot4 <- plot(df4[,1],df4[,3],xlab="year",ylab="Daily Totals (GWh)", type='l',
+              lwd=2,main="Consumption",col="orange", xlim=c(xmin,xmax),ylim=c(ymin,ymax))
+```
+
+```{r}
+boxplot(df3$Consumption)
+```
+
+```{r}
+boxplot(df3$Solar)
+```
+
+```{r}
+boxplot(df3$Consumption,main="Consumption",ylab="Consumption",
+        ylim=c(600,1800))
+```
+
+```{r}
+boxplot(df3$Consumption ~ df3$year , main="Consumption",
+   ylab="Consumption", xlab="year", ylim=c(600,1800))
+```
+
+```{r}
+boxplot(df3$Consumption ~ df3$year, main="Consumption", ylab="Consumption", xlab="year",
+        ylim=c(600,1800))
+```
+
+```{r}
+par(mfrow=c(3,1))
+```
+
+```{r}
+boxplot(df3$Consumption ~ df3$month, main="Consumption", ylab="Consumption", xlab="month",
+        ylim=c(600,1800),las=1, col="red")
+```
+
+```{r}
+boxplot(df3$Wind ~ df3$month, main="Wind", ylab="Wind", xlab="month",
+        ylim=c(0,900),las=1, col="blue")
+```
+
+```{r}
+boxplot(df3$Solar ~ df3$month, main="Solar", ylab="Solar", xlab="month",
+        ylim=c(0,200),las=1, col="green")
+```
+
+```{r}
+par(mfrow=c(1,1))
+boxplot(df3$Consumption ~ df3$day, main="Consumption", ylab="Consumption", xlab="days",
+        ylim=c(600,1800),las=1, col="green")
+```

@@ -244,5 +244,3 @@ str(selwind3)
 selwind4 <- selwind[which(is.na(selwind3$Wind)),
                     names(selwind3) %in% c("moddate","Consumption","Wind","Solar")]
 selwind4
-
-
